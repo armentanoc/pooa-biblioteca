@@ -2,7 +2,7 @@ package br.ucsal.biblioteca.model;
 
 
 public class Livro {
-    private static Integer contadorId;
+    private static Integer contadorId = 1;
 
     private final Integer id;
     private String titulo;
@@ -11,7 +11,7 @@ public class Livro {
     private boolean disponivel;
 
     public Livro(String titulo, String autor, int anoPublicacao) {
-        this.id = contadorId;
+    	this.id = contadorId++;
         this.titulo = titulo;
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
