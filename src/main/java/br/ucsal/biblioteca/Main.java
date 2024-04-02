@@ -1,6 +1,7 @@
 package br.ucsal.biblioteca;
 
 import br.ucsal.biblioteca.controller.Biblioteca;
+import br.ucsal.biblioteca.controller.LembreteDevolucaoRunnable;
 import br.ucsal.biblioteca.model.Emprestimo;
 import br.ucsal.biblioteca.model.Livro;
 import br.ucsal.biblioteca.model.Usuario;
@@ -13,8 +14,9 @@ import java.time.LocalDate;
 public class Main {
     public static void main(String[] args) {
         Biblioteca biblioteca = new Biblioteca();
+        LembreteDevolucaoRunnable lembreteDevolucao = new LembreteDevolucaoRunnable(biblioteca);
         fazerCargaInicial(biblioteca);
-        Console sistema = new Console(biblioteca);
+        Console sistema = new Console(biblioteca, lembreteDevolucao);
         sistema.iniciarConsole();
     }
 

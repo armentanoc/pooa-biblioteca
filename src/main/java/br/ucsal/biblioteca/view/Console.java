@@ -1,6 +1,7 @@
 package br.ucsal.biblioteca.view;
 
 import br.ucsal.biblioteca.controller.Biblioteca;
+import br.ucsal.biblioteca.controller.LembreteDevolucaoRunnable;
 import br.ucsal.biblioteca.model.Emprestimo;
 import br.ucsal.biblioteca.model.Livro;
 import br.ucsal.biblioteca.model.Usuario;
@@ -15,54 +16,56 @@ public class Console {
     private final Scanner scanner = new Scanner(System.in);
 
     private final Biblioteca biblioteca;
-
-    public Console(Biblioteca biblioteca){
+    
+    private final LembreteDevolucaoRunnable lembreteDevolucao;
+    
+    public Console(Biblioteca biblioteca, LembreteDevolucaoRunnable lembreteDevolucao){
         this.biblioteca = biblioteca;
+        this.lembreteDevolucao = lembreteDevolucao;
     }
 
     public void iniciarConsole() {
-        boolean sair = false;
-        while (!sair) {
-            System.out.println("\n--- Sistema de Gerenciamento de Biblioteca ---");
-            System.out.println("1. Adicionar Livro");
-            System.out.println("2. Adicionar Usuário");
-            System.out.println("3. Empréstimo de Livro");
-            System.out.println("4. Devolução de Livro");
-            System.out.println("5. Enviar Lembretes de Devolução");
-            System.out.println("5. Listar Usuários");
-            System.out.println("7. Sair");
-            System.out.print("Escolha uma opção: ");
-            int opcao = scanner.nextInt();
-            scanner.nextLine(); // Consumir nova linha
+    	 Thread lembreteThread = new Thread(lembreteDevolucao);
+         lembreteThread.start();
 
-            switch (opcao) {
-                case 1:
-                    this.adicionarLivroConsole();
-                    break;
-                case 2:
-                    this.adicionarUsuarioConsole();
-                    break;
-                case 3:
-                    emprestarLivroConsole();
-                    break;
-                case 4:
-                    devolverLivroConsole();
-                    break;
-                case 5:
-                    enviarLembretesDevolucao();
-                    break;
-                case 6:
-                    listarUsuariosConsole();
-                    break;
-                case 7:
-                    sair = true;
-                    break;
-                default:
-                    System.out.println("Opção inválida.");
-                    break;
-            }
-        }
-        scanner.close();
+         boolean sair = false;
+         while (!sair) {
+             System.out.println("\n--- Sistema de Gerenciamento de Biblioteca ---");
+             System.out.println("1. Adicionar Livro");
+             System.out.println("2. Adicionar Usuário");
+             System.out.println("3. Empréstimo de Livro");
+             System.out.println("4. Devolução de Livro");
+             System.out.println("5. Listar Usuários");
+             System.out.println("6. Sair");
+             System.out.print("Escolha uma opção: \n");
+             int opcao = scanner.nextInt();
+             scanner.nextLine(); // Consumir nova linha
+
+             switch (opcao) {
+                 case 1:
+                     adicionarLivroConsole();
+                     break;
+                 case 2:
+                     adicionarUsuarioConsole();
+                     break;
+                 case 3:
+                     emprestarLivroConsole();
+                     break;
+                 case 4:
+                     devolverLivroConsole();
+                     break;
+                 case 5:
+                     listarUsuariosConsole();
+                     break;
+                 case 6:
+                     sair = true;
+                     break;
+                 default:
+                     System.out.println("Opção inválida.");
+                     break;
+             }
+         }
+         scanner.close();
     }
 
     private void listarUsuariosConsole() {
@@ -201,9 +204,8 @@ public class Console {
 
     private void enviarLembretesDevolucao() {
         System.out.println("\n--- Enviando Lembretes de Devolução ---");
-        biblioteca.enviarLembretesDevolucao();
+        this.lembreteDevolucao.run();
         System.out.println("\n--- Lembretes de Devolução Enviados---");
     }
-
-
+    
 }
