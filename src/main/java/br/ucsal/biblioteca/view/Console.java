@@ -6,7 +6,9 @@ import br.ucsal.biblioteca.model.Emprestimo;
 import br.ucsal.biblioteca.model.Livro;
 import br.ucsal.biblioteca.model.Usuario;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 // Classes Livro e Usuario como fornecido anteriormente
@@ -36,7 +38,8 @@ public class Console {
              System.out.println("3. Empréstimo de Livro");
              System.out.println("4. Devolução de Livro");
              System.out.println("5. Listar Usuários");
-             System.out.println("6. Sair");
+             System.out.println("6. Listar Livros");
+             System.out.println("7. Sair");
              System.out.print("Escolha uma opção: \n");
              int opcao = scanner.nextInt();
              scanner.nextLine(); // Consumir nova linha
@@ -55,9 +58,12 @@ public class Console {
                      devolverLivroConsole();
                      break;
                  case 5:
-                     listarUsuariosConsole();
+                     listarEntidadesConsole(biblioteca.getUsuarios());
                      break;
                  case 6:
+                     listarEntidadesConsole(biblioteca.getLivros());
+                     break;
+                 case 7:
                      sair = true;
                      break;
                  default:
@@ -68,14 +74,23 @@ public class Console {
          scanner.close();
     }
 
-    private void listarUsuariosConsole() {
-        System.out.println("\n--- Listar Usuarios ---");
-        for (Usuario usuario : biblioteca.getUsuarios()) {
-            System.out.println("Id: "+usuario.getId());
-            System.out.println("Nome: "+usuario.getId());
+    private <T> void listarEntidadesConsole(List<T> entidades) {
+        System.out.println("\n--- Listar "+entidades.get(0).getClass().getSimpleName()+" ---");
+        for (T entidade : entidades) {
+            Class<?> entidadeClass = entidade.getClass();
+            System.out.println(entidadeClass.getSimpleName() + ":");
+            for (Field field : entidadeClass.getDeclaredFields()) {
+                field.setAccessible(true);
+                try {
+                    System.out.println(field.getName() + ": " + field.get(entidade));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("-------------");
         }
     }
-
+    
     private void adicionarLivroConsole() {
         System.out.println("\n--- Adicionar Livro ---");
         System.out.print("Título: ");
