@@ -7,7 +7,7 @@ public class Usuario {
     private static Integer contadorId = 1;
 
     private int id;
-
+    @MinLength(3)
     private String nome;
 
     public Usuario(String nome) {
